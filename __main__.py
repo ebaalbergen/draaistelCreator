@@ -4,7 +4,13 @@ import STLcreator
 import sys
 
 def main(template, parameters):
-    return "test"
+    model = STLcreator.Model("face")
+    triangle1 = STLcreator.Triangle()
+    triangle1.addVertex(0, 0, 0)
+    triangle1.addVertex(1, 0, 0)
+    triangle1.addVertex(0, 1, 0)
+    model.addTriangle(triangle1)
+    return model.getSTLCode()
 
 def saveFile(filename, string):
     try:
