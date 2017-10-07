@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+from math import sqrt
+
+# Function to convert a number to a string wherein the number is represented
+# in scientific notation.
+def num2sci(number):
+    return str("%e" % float(number))
+
+
 # Class for representing a vertex. 
 # Contains three floats to store the x, y and z coordinate.
 class Vertex:
@@ -10,7 +18,7 @@ class Vertex:
 
     # Function to return the STL-code for the vertex.
     def getSTLCode(self):
-        return "vertex " + str(float(self.x)) + " " + str(float(self.y)) + " " + str(float(self.z))
+        return "vertex " + num2sci(self.x) + " " + num2sci(self.y) + " " + num2sci(self.z)
 
 
 class Triangle:
@@ -44,6 +52,13 @@ class Triangle:
         normalX = BB*FF-CC*EE 
         normalY = CC*DD-AA*FF
         normalZ = AA*EE-BB*DD
+
+        # Calculate length of vector and devide all the coordinates by this 
+        # value to get an unit vector as a normal.
+        length = sqrt(normalX**2+normalY**2+normalZ**2)
+        normalX /= length
+        normalY /= length
+        normalZ /= length
         return normalX, normalY, normalZ
     
     # Function to get the STL-code for the face
@@ -51,7 +66,7 @@ class Triangle:
         stlCode = ""
         # Define the face and define the normal of the face.
         normalX, normalY, normalZ = self.getNormalVector()
-        stlCode += "facet normal "+str(normalX)+" "+str(normalY)+" "+str(normalZ)+"\n"
+        stlCode += "facet normal "+num2sci(normalX)+" "+num2sci(normalY)+" "+num2sci(normalZ)+"\n"
         
         # Begin looping over al the verteces and add their STL-codes to the face
         stlCode += "outer loop\n"
