@@ -1,15 +1,54 @@
 #!/usr/bin/env python
 
-import STLcreator
+from STLcreator import model as mdl
 import sys
+import json
 
 def main(template, parameters):
-    model = STLcreator.Model("face")
-    triangle1 = STLcreator.Triangle()
-    triangle1.addVertex(0, 0, 0)
-    triangle1.addVertex(1, 0, 0)
-    triangle1.addVertex(0, 1, 0)
-    model.addTriangle(triangle1)
+    try:
+        template   = open(template, "r")
+        parameters = open(parameters, "r")
+    except:
+        print("Error reading file.")
+
+    try:
+        template   = json.load(template)
+        parameters = json.load(parameters)
+    except:
+        print("Error reading JSON")
+
+    triangles = template[1]["triangles"]
+    model = mdl.Model("face")
+    
+    for triangle in triangles:
+        tempTriangle = mdl.Triangle()
+        
+        for vertex in triangle:
+            triangleName = vertex
+        
+        verteces = []
+        verteces.append(template[0]["vertex"][triangle[triangleName][0]])
+        verteces.append(template[0]["vertex"][triangle[triangleName][1]])
+        verteces.append(template[0]["vertex"][triangle[triangleName][2]])
+        
+        for vertex in verteces:
+            xCoordinate = vertex[0]["x"]
+            yCoordinate = vertex[1]["y"]
+            zCoordinate = vertex[2]["z"]
+            
+            if type(xCoordinate) is str:
+                xCoordinate = parameters[xCoordinate]
+            
+            if type(yCoordinate) is str:
+                yCoordinate = parameters[yCoordinate]
+            
+            if type(zCoordinate) is str:
+                zCoordinate = parameters[zCoordinate]
+            
+            tempTriangle.addVertex(xCoordinate, yCoordinate, zCoordinate)
+        
+        model.addTriangle(tempTriangle)
+    
     return model.getSTLCode()
 
 def saveFile(filename, string):
